@@ -1,17 +1,12 @@
 #include <iostream>
 using namespace std;
 
-class ESensor;
+class HomeOwner;
 
-class HomeOwner {
-private:
-    string name;
-
+class ESensor {
 public:
-    HomeOwner(const string& name) : name(name) {}
-
-    string getName() const {
-        return name;
+    static int getCurrentTemp() {
+        return 20; 
     }
 };
 
@@ -22,7 +17,7 @@ private:
 public:
     WaterHeater() : temp(0) {}
 
-    void setTemp(int temp) {
+    void settemp(int temp) {
         temp = temp;
     }
 
@@ -31,48 +26,40 @@ public:
     }
 };
 
-class ESensor {
-public:
-    int getCurrenttemp() const {
-        return 20;
-    }
-};
-
 class SmartGeyser {
 private:
-    ESensor* sensor;
     WaterHeater* heater;
 
 public:
-    SmartGeyser(ESensor* sensor, WaterHeater* heater) : sensor(sensor), heater(heater) {}
+    SmartGeyser(WaterHeater* heater) : heater(heater) {}
 
     void activateGeyser() {
-        int currentTemp = sensor->getCurrenttemp();
+        int currentTemp = ESensor::getCurrentTemp();
         int requiredTemp = calculateRequiredtemp(currentTemp);
-        heater->setTemp(requiredTemp);
+        adjustHeatingSystem(requiredTemp);
     }
 
 private:
     int calculateRequiredtemp(int currentTemp) {
+        
         if (currentTemp <= 10) {
             return 50;
         } else {
-            return 40;
+            return 40; 
         }
+    }
+
+    void adjustHeatingSystem(int requiredTemp) {
+        heater->settemp(requiredTemp);
     }
 };
 
 int main() {
-    HomeOwner owner("Guruji");
-    ESensor sensor;
     WaterHeater heater;
-    SmartGeyser geyser(&sensor, &heater);
-
-    cout << owner.getName() << " gets out of bed." << endl;
-
+    SmartGeyser geyser(&heater);
+    cout << "Homeowner gets out of bed." << std::endl;
     geyser.activateGeyser();
-
-    cout << "Heating temp of water: " << heater.gettemp() << "�C" << endl;
+    cout << "Heating temp of water: " << heater.gettemp() << "°C" << std::endl;
     return 0;
 }
 
